@@ -1,0 +1,29 @@
+{
+  "name": "guess-file-type",
+  "version": "0.1.0",
+  "description": "Detect the file type by doing various checks. Returns the mime type.",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --reporter spec"
+  },
+  "keywords": [
+    "mime",
+    "file",
+    "type",
+    "magic-number",
+    "file-signature"
+  ],
+  "author": {
+    "name": "Nico Amarilla",
+    "url": "https://www.kosinix.com"
+  },
+  "engines": {
+    "node": ">=8"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.0.5"
+  },
+  "dependencies": {}
+}
