@@ -1,7 +1,8 @@
 {
   "name": "guess-file-type",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Detect the file type by doing various checks. Returns the mime type.",
+  "repository": "github:kosinix/guess-file-type",
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec"
