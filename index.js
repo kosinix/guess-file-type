@@ -313,23 +313,3 @@ module.exports = {
     guessByFileSignature: guessByFileSignature,
     guessByExtension: guessByExtension,
 };
-
-
-// ola = async () => {
-//     try {
-//         let exec = util.promisify(require('child_process').exec);
-//         let command = util.format('file %s --mime-type --brief', './test/files/mp4.mp4');
-//         const { stdout, stderr } = await exec(command);
-
-//         console.log(util.format('stdout: "%s"', stdout.trim()));
-//         console.log('stderr', stderr);
-//     } catch (err) {
-//         console.log('ERRROR:', err);
-//     }
-// }
-
-// ola().then(()=>{
-    
-// }).catch((err)=>{
-//     console.log('Err', err);
-// });
