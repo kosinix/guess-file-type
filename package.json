@@ -1,6 +1,6 @@
 {
   "name": "guess-file-type",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Detect the file type by doing various checks. Returns the mime type.",
   "repository": "github:kosinix/guess-file-type",
   "main": "index.js",
