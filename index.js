@@ -228,6 +228,12 @@ let guessByBuffer = (buffer) => {
         return 'application/pdf';
     }
 
+    // PKZIP archive file
+    // PK..
+    if(buffer.includes(Buffer.from([0x50, 0x4B, 0x03, 0x04]), 0) ){
+        return 'application/zip';
+    }
+
     // TRAILER BYTES - markers that are at the end 
 
 
