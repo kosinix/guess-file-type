@@ -19,7 +19,6 @@ const fsAsync = {
 // Guess using `file` command
 let guessByFileCmd = async (filePath, filters=null) => {
     try {
-        // let command = util.format('file %s --mime-type --brief', filePath);
         let command = util.format('mimetype --brief %s', filePath);
         let { stdout, stderr } = await execAsync(command);
 
