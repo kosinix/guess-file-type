@@ -14,6 +14,7 @@ const fsAsync = {
     read: util.promisify(fs.read),
     close: util.promisify(fs.close),
     unlink: util.promisify(fs.unlink),
+    fstat: util.promisify(fs.fstat),
 };
 
 // Guess using `file` command
@@ -318,3 +319,22 @@ module.exports = {
     guessByFileSignature: guessByFileSignature,
     guessByExtension: guessByExtension,
 };
+
+
+fs.stat('./test/files/zip.zip', (err, stats)=>{
+    console.log(err,stats);
+});
+
+async function what(){
+    let bufLength = 22; // Minimum buffer length to accomodate the longest magic number chunk
+    let fd = await fsAsync.open('./test/files/zip.zip', 'r');
+    let size
+    let content = await fsAsync.read(fd, Buffer.alloc(bufLength), 0, bufLength, 115-22);
+    await fsAsync.close(fd);
+    let buffer = content.buffer;
+    return buffer;
+}
+
+what().then((buffer)=>{
+    console.log(buffer.toString());
+}).catch((err)=>{})
