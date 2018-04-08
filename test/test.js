@@ -151,6 +151,11 @@ describe("File Type Test", ()=> {
             let type = await guessFileType.guess('./test/files/pdf.pdf');
             expect(type).to.equal('application/pdf');
         });
+
+        it("pptx", async ()=> {
+            let type = await guessFileType.guess('./test/files/pptx.pptx');
+            expect(type).to.equal('application/vnd.openxmlformats-officedocument.presentationml.presentation');
+        });
         
         it("psd", async ()=> {
             let type = await guessFileType.guess('./test/files/psd.psd');

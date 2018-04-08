@@ -110,6 +110,7 @@ Promise:
 1. ogv
 1. pdf
 1. png
+1. pptx
 1. psd
 1. tga
 1. tiff
