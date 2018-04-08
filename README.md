@@ -87,6 +87,13 @@ Promise:
     }).catch((err)=>{});
 
     
+## References
+
+* https://www.iana.org/assignments/media-types/media-types.xhtml
+* http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
+* https://www.garykessler.net/library/file_sigs.html
+* https://en.wikipedia.org/wiki/List_of_file_signatures
+
 ## Supported Types
 
 1. 123
