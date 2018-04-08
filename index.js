@@ -86,6 +86,9 @@ let guessByFileSignature = async (filePath) => {
     let length = 35; // Minimum buffer length to accomodate the longest magic number chunk
     let buffer = await getChunk(filePath, length);
 
+    // TODO: Rearrange buffer checks with the longest buffers on top
+
+
     // Windows (or device-independent) bitmap image
     // BM
     if(buffer.includes(Buffer.from([0x42, 0x4D]), 0)){
