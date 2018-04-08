@@ -117,43 +117,50 @@ let guessByFileSignature = async (filePath) => {
 
 
     // Windows (or device-independent) bitmap image
+    // bmp|dib
     // BM
     if(buffer.includes(Buffer.from([0x42, 0x4D]), 0)){
         return 'image/bmp';
     }
 
     // Graphics interchange format file
-    // GIF87a or GIF89a
+    // gif
+    // GIF87a or 
+    // GIF89a
     if(buffer.includes(Buffer.from([0x47, 0x49, 0x46, 0x38, 0x37, 0x61]), 0) || 
         buffer.includes(Buffer.from([0x47, 0x49, 0x46, 0x38, 0x39, 0x61]), 0)){
         return 'image/gif';
     }
 
     // Generic JPEGimage file
+    // jpg|jpeg
     // ÿØ
     if(buffer.includes(Buffer.from([0xFF, 0xD8]), 0)){
         return 'image/jpeg';
     }
 
     // Various JPEG-2000 image file formats
+    // jp2
     // ....jP  
     if(buffer.includes(Buffer.from([0x6A, 0x50, 0x20, 0x20]), 4)){
         return 'image/jp2';
     }
 
     // Portable Network Graphics
+    // png
     // ‰PNG....
     if(buffer.includes(Buffer.from([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]), 0)){
         return 'image/png';
     }
 
     // Tagged Image File Format file (little endian, i.e., LSB first in the byte; Intel)
-    // II*.
     // Tagged Image File Format file (big endian, i.e., LSB last in the byte; Motorola)
-    // MM.*
     // BigTIFF files; Tagged Image File Format files >4 GB
-    // 	MM.+
     // Tagged Image File Format file 
+    // tiff
+    // II*.
+    // MM.*
+    // MM.+
     // I I
     if(buffer.includes(Buffer.from([0x49, 0x49, 0x2A, 0x00]), 0) || 
         buffer.includes(Buffer.from([0x4D, 0x4D, 0x00, 0x2A]), 0) ||
@@ -163,12 +170,14 @@ let guessByFileSignature = async (filePath) => {
     }
 
     // Photoshop image file
+    // psd
     // 8BPS
     if(buffer.includes(Buffer.from([0x38, 0x42, 0x50, 0x53]), 0)){
         return 'image/vnd.adobe.photoshop';
     }
 
     // Portable BitMap
+    // pbm
     // P1.
     // p4.
     if(buffer.includes(Buffer.from([0x50, 0x31, 0x0A]), 0) || 
@@ -177,6 +186,7 @@ let guessByFileSignature = async (filePath) => {
     }
 
     // Portable Graymap Graphic
+    // pgm
     // P2.
     // P5.
     if(buffer.includes(Buffer.from([0x50, 0x32, 0x0A]), 0) || 
@@ -185,6 +195,7 @@ let guessByFileSignature = async (filePath) => {
     }
 
     // Portable PixMap
+    // ppm
     // P3.
     // P6.
     if(buffer.includes(Buffer.from([0x50, 0x33, 0x0A]), 0) || 
@@ -193,17 +204,22 @@ let guessByFileSignature = async (filePath) => {
     }
 
     // Portable AnyMap
+    // pam
     // P7.
     if(buffer.includes(Buffer.from([0x50, 0x37, 0x0A]), 0) ){
         return 'image/x-portable-anymap';
     }
 
     // MPEG-1 Layer 3 file without an ID3 tag or with an ID3v1 tag (which's appended at the end of the file)
+    // mp3 
+    // ÿû
     if(buffer.includes(Buffer.from([0x49, 0x44, 0x33]), 0) ){
         return 'audio/mpeg';
     }
 
     // MP3 file with an ID3v2 container
+    // mp3 
+    // ID3
     if(buffer.includes(Buffer.from([0xFF, 0xFB]), 0) ){
         return 'audio/mpeg';
     }
@@ -330,6 +346,8 @@ let guessByFileSignature = async (filePath) => {
         
         return 'application/zip';
     }
+
+    
 
     // TRAILER BYTES - markers that are at the end 
 
