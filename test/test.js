@@ -1,7 +1,7 @@
 const expect = require("chai").expect;
 const guessFileType = require("./../index.js");
 
-describe("File Type Test", ()=> {
+describe("Test Using guess()", ()=> {
     describe("Image Types", ()=> {
         it("bmp", async ()=> {
             let type = await guessFileType.guess('./test/files/bmp.bmp');
@@ -165,6 +165,35 @@ describe("File Type Test", ()=> {
         it("txt", async ()=> {
             let type = await guessFileType.guess('./test/files/txt.txt');
             expect(type).to.equal('text/plain');
+        });
+
+    });
+
+    describe("Font Types", ()=> {      
+
+        it("eot", async ()=> {
+            let type = await guessFileType.guess('./test/files/eot.eot');
+            expect(type).to.equal('application/vnd.ms-fontobject');
+        });
+
+        it("ttf", async ()=> {
+            let type = await guessFileType.guess('./test/files/ttf.ttf');
+            expect(type).to.equal('font/ttf');
+        });
+
+        it("svg", async ()=> {
+            let type = await guessFileType.guess('./test/files/font.svg');
+            expect(type).to.equal('image/svg+xml');
+        });
+
+        it("woff", async ()=> {
+            let type = await guessFileType.guess('./test/files/woff.woff');
+            expect(type).to.equal('font/woff');
+        });
+
+        it("woff2", async ()=> {
+            let type = await guessFileType.guess('./test/files/woff2.woff2');
+            expect(type).to.equal('font/woff2');
         });
 
     });

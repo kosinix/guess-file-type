@@ -347,7 +347,14 @@ let guessByFileSignature = async (filePath) => {
         return 'application/zip';
     }
 
-    
+    // Fonts
+
+    // TrueType font file
+    // ttf
+    // true.
+    if(buffer.includes(Buffer.from([0x74, 0x72, 0x75, 0x65, 0x00]), 0) ){
+        return 'font/ttf';
+    }
 
     // TRAILER BYTES - markers that are at the end 
 
@@ -392,6 +399,10 @@ let guessByExtension = (filePath) => {
         return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
     }
 
+    if(['eot'].indexOf(ext)!==-1){
+        return 'application/vnd.ms-fontobject';
+    }
+
     if(['html', 'htm'].indexOf(ext)!==-1){
         return 'text/html';
     }
@@ -400,6 +411,21 @@ let guessByExtension = (filePath) => {
         return 'text/n3';
     }
 
+    if(['svg', 'svgz'].indexOf(ext)!==-1){
+        return 'image/svg+xml';
+    }
+
+    if(['ttf'].indexOf(ext)!==-1){
+        return 'font/ttf';
+    }
+
+    if(['woff'].indexOf(ext)!==-1){
+        return 'font/woff';
+    }
+
+    if(['woff2'].indexOf(ext)!==-1){
+        return 'font/woff2';
+    }
     return 'unknown';
 }
 
