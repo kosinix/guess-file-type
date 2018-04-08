@@ -1,6 +1,8 @@
 # Guess File Type
 Detect the file type by doing various checks. Returns the mime type.
 
+[![NPM Version][npm-image]][npm-url]
+
 ## How it Works
 
 * First it tries to use the `mimetype` command. See Requirements > Optional.
