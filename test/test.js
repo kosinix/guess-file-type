@@ -16,7 +16,7 @@ describe("File Type Test", ()=> {
             expect(type).to.equal('image/jpeg');
         });
 
-        it("jpeg 2000", async ()=> {
+        it("jpeg 2000 (jp2)", async ()=> {
             let type = await guessFileType.guess('./test/files/jpeg-2000.jp2');
             expect(type).to.equal('image/jp2');
         });
