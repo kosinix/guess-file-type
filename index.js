@@ -17,7 +17,47 @@ const fsAsync = {
     fstat: util.promisify(fs.fstat),
 };
 
-// Guess using `file` command
+/**
+ * Get chunk from beginning of file.
+ * 
+ * @param {string} filePath - Path to the file.
+ * @param {number} length - The byte length of the buffer.
+ * @returns {Buffer} The chunk
+ */
+let getChunk = async (filePath, length)=>{
+    let fd = await fsAsync.open(filePath, 'r');
+    // Get from start
+    let content = await fsAsync.read(fd, Buffer.alloc(length), 0, length, 0);
+    await fsAsync.close(fd);
+    let buffer = content.buffer;
+    return buffer;
+}
+
+/**
+ * Get chunk from the end of file.
+ * 
+ * @param {string} filePath - Path to the file.
+ * @param {number} length - The byte length of the buffer.
+ * @returns {Buffer} The chunk
+ */
+let getChunkFromEnd = async (filePath, length)=>{
+    let fd = await fsAsync.open(filePath, 'r');
+    // We need the size
+    let stat = await fsAsync.fstat(fd);
+    // Get from end of file (not from start)
+    let content = await fsAsync.read(fd, Buffer.alloc(length), 0, length, stat.size-length);
+    await fsAsync.close(fd);
+    let buffer = content.buffer;
+    return buffer;
+}
+
+/**
+ * Guess using the `mimetype` command of linux.
+ * 
+ * @param {string} filePath 
+ * @param {(null|Array)} filters 
+ * @returns {string} The mime type on success or 'unknown' on fail.
+ */
 let guessByFileCmd = async (filePath, filters=null) => {
     try {
         let command = util.format('mimetype --brief %s', filePath);
@@ -58,29 +98,16 @@ let guessByFileCmd = async (filePath, filters=null) => {
     }
 };
 
-let getChunk = async (filePath, length)=>{
-    let fd = await fsAsync.open(filePath, 'r');
-    // Get from start
-    let content = await fsAsync.read(fd, Buffer.alloc(length), 0, length, 0);
-    await fsAsync.close(fd);
-    let buffer = content.buffer;
-    return buffer;
-}
 
-let getChunkFromEnd = async (filePath, length)=>{
-    let fd = await fsAsync.open(filePath, 'r');
-    // We need the size
-    let stat = await fsAsync.fstat(fd);
-    // Get from end of file (not from start)
-    let content = await fsAsync.read(fd, Buffer.alloc(length), 0, length, stat.size-length);
-    await fsAsync.close(fd);
-    let buffer = content.buffer;
-    return buffer;
-}
-
-// Guess mime type by file signature and depending on the format, using its file extension.
-// See: http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
-// See: https://www.garykessler.net/library/file_sigs.html
+/**
+ * Guess the mime type of a file by checking its file signature. 
+ * Some formats share the same file signature. In this case, we differentiate by checking the file extension.
+ * 
+ * See {@link https://www.garykessler.net/library/file_sigs.html|www.garykessler.net/library/file_sigs.html}
+ * See {@link http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup|svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types}
+ * @param {string} filePath - Path to the file.
+ * @returns {string} The mime type on success or 'unknown' on fail.
+ */
 let guessByFileSignature = async (filePath) => {
 
     let length = 35; // Minimum buffer length to accomodate the longest magic number chunk
@@ -310,7 +337,11 @@ let guessByFileSignature = async (filePath) => {
     return 'unknown';
 };
 
-// Guess mime type by file extension
+/**
+ * Guess the mime type of a file by checking its file extension.
+ * @param {string} filePath - Path to the file.
+ * @returns {string} The mime type on success or 'unknown' on fail.
+ */
 let guessByExtension = (filePath) => {
     // Fallback to file extensions
     let ext = path.extname(filePath);
@@ -354,7 +385,11 @@ let guessByExtension = (filePath) => {
     return 'unknown';
 }
 
-
+/**
+ * Guess the mime type of a file in three cascading steps: Using the linux `mimetype` command, checking the file signature, and checking its file extension.
+ * @param {string} filePath - Path to the file.
+ * @returns {string} The mime type on success or 'unknown' on fail.
+ */
 let guess = async (filePath)=>{
     // Guess using mimetype command
     let guess = await guessByFileCmd(filePath);
