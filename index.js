@@ -8,10 +8,15 @@ const execAsync = util.promisify(require('child_process').exec);
 
 //// Modules
 
+
+let content = fs.readFileSync('./mime.json', 'utf-8');
+let mimeCollection = JSON.parse(content);
+
 // Turn callback style api into promise/async
 const fsAsync = {
     open: util.promisify(fs.open),
     read: util.promisify(fs.read),
+    readFile: util.promisify(fs.readFile),
     close: util.promisify(fs.close),
     unlink: util.promisify(fs.unlink),
     fstat: util.promisify(fs.fstat),
@@ -371,62 +376,13 @@ let guessByExtension = (filePath) => {
     // Fallback to file extensions
     let ext = path.extname(filePath);
     ext = ext.split('.').pop().toLowerCase();
-    if(['txt', 'text', 'conf', 'def', 'list', 'log', 'in'].indexOf(ext)!==-1){
-        return 'text/plain';
+    
+    let mime = 'unknown';
+    if(mimeCollection.hasOwnProperty(ext)){
+        mime = mimeCollection[ext];
     }
-
-    if(['appcache'].indexOf(ext)!==-1){
-        return 'text/cache-manifest';
-    }
-
-    if(['ics', 'ifb'].indexOf(ext)!==-1){
-        return 'text/calendar';
-    }
-
-    if(['css'].indexOf(ext)!==-1){
-        return 'text/css';
-    }
-
-    if(['csv'].indexOf(ext)!==-1){
-        return 'text/csv';
-    }
-
-    if(['doc', 'dot'].indexOf(ext)!==-1){
-        return 'application/msword';
-    }
-
-    if(['docx'].indexOf(ext)!==-1){
-        return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-    }
-
-    if(['eot'].indexOf(ext)!==-1){
-        return 'application/vnd.ms-fontobject';
-    }
-
-    if(['html', 'htm'].indexOf(ext)!==-1){
-        return 'text/html';
-    }
-
-    if(['n3'].indexOf(ext)!==-1){
-        return 'text/n3';
-    }
-
-    if(['svg', 'svgz'].indexOf(ext)!==-1){
-        return 'image/svg+xml';
-    }
-
-    if(['ttf'].indexOf(ext)!==-1){
-        return 'font/ttf';
-    }
-
-    if(['woff'].indexOf(ext)!==-1){
-        return 'font/woff';
-    }
-
-    if(['woff2'].indexOf(ext)!==-1){
-        return 'font/woff2';
-    }
-    return 'unknown';
+    
+    return mime;
 }
 
 /**
@@ -459,6 +415,5 @@ module.exports = {
 
 
 
-getChunkFromEnd('./test/files/zip.zip', 22).then((buffer)=>{
-    console.log(buffer.toString());
-}).catch((err)=>{})
+
+
