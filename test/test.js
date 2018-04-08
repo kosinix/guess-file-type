@@ -116,6 +116,10 @@ describe("Test Using guess()", ()=> {
     });
 
     describe("Document Types", ()=> {      
+        it("123", async ()=> {
+            let type = await guessFileType.guess('./test/files/123.123');
+            expect(type).to.equal('application/vnd.lotus-1-2-3');
+        });
 
         it("css", async ()=> {
             let type = await guessFileType.guess('./test/files/css.css');
@@ -197,4 +201,10 @@ describe("Test Using guess()", ()=> {
         });
 
     });
+
+    // afterEach((done) => {
+    //     console.log(done);
+    //     done();
+    // });
 });
+
