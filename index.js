@@ -58,10 +58,34 @@ let guessByFileCmd = async (filePath, filters=null) => {
     }
 };
 
-// Guess mime type of buffer. Sync.
+let getChunk = async (filePath, length)=>{
+    let fd = await fsAsync.open(filePath, 'r');
+    // Get from start
+    let content = await fsAsync.read(fd, Buffer.alloc(length), 0, length, 0);
+    await fsAsync.close(fd);
+    let buffer = content.buffer;
+    return buffer;
+}
+
+let getChunkFromEnd = async (filePath, length)=>{
+    let fd = await fsAsync.open(filePath, 'r');
+    // We need the size
+    let stat = await fsAsync.fstat(fd);
+    // Get from end of file (not from start)
+    let content = await fsAsync.read(fd, Buffer.alloc(length), 0, length, stat.size-length);
+    await fsAsync.close(fd);
+    let buffer = content.buffer;
+    return buffer;
+}
+
+// Guess mime type by file signature and depending on the format, using its file extension.
 // See: http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
 // See: https://www.garykessler.net/library/file_sigs.html
-let guessByBuffer = (buffer) => {
+let guessByFileSignature = async (filePath) => {
+
+    let length = 35; // Minimum buffer length to accomodate the longest magic number chunk
+    let buffer = await getChunk(filePath, length);
+
     // Windows (or device-independent) bitmap image
     // BM
     if(buffer.includes(Buffer.from([0x42, 0x4D]), 0)){
@@ -228,9 +252,52 @@ let guessByBuffer = (buffer) => {
         return 'application/pdf';
     }
 
+    // Microsoft Office Open XML Format (OOXML) Document
+    // PK......
+    if(buffer.includes(Buffer.from([0x50, 0x4B, 0x03, 0x04, 0x14, 0x00, 0x06, 0x00]), 0) ){
+        let ext = path.extname(filePath);
+        ext = ext.split('.').pop().toLowerCase();
+        if(['pptx'].indexOf(ext)!==-1){
+            return 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+        }
+        if(['xlsx'].indexOf(ext)!==-1){
+            return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+        }
+        // docx
+        return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+    }
+
+    
     // PKZIP archive file
     // PK..
     if(buffer.includes(Buffer.from([0x50, 0x4B, 0x03, 0x04]), 0) ){
+        let ext = path.extname(filePath);
+        ext = ext.split('.').pop().toLowerCase();
+        if(['jar'].indexOf(ext)!==-1){
+            return 'application/java-archive';
+        }
+        if(['kmz'].indexOf(ext)!==-1){
+            return 'application/vnd.google-earth.kmz';
+        }
+        if(['kwd'].indexOf(ext)!==-1){
+            return 'application/vnd.kde.kword';
+        }
+        
+        if(['odp'].indexOf(ext)!==-1){
+            return 'application/vnd.oasis.opendocument.presentation';
+        }
+        if(['odt'].indexOf(ext)!==-1){
+            return 'application/vnd.oasis.opendocument.text';
+        }
+        if(['ott'].indexOf(ext)!==-1){
+            return 'application/vnd.oasis.opendocument.text-template';
+        }
+        if(['oxps'].indexOf(ext)!==-1){
+            return 'application/oxps';
+        }
+        // SXC, SXD, SXI, SXW	        
+        
+        
         return 'application/zip';
     }
 
@@ -244,7 +311,7 @@ let guessByBuffer = (buffer) => {
 let guessByExtension = (filePath) => {
     // Fallback to file extensions
     let ext = path.extname(filePath);
-    ext = ext.split('.').pop();
+    ext = ext.split('.').pop().toLowerCase();
     if(['txt', 'text', 'conf', 'def', 'list', 'log', 'in'].indexOf(ext)!==-1){
         return 'text/plain';
     }
@@ -284,19 +351,6 @@ let guessByExtension = (filePath) => {
     return 'unknown';
 }
 
-// Guess mime type by checking file signature
-let guessByFileSignature = async (filePath)=>{
-
-    let bufLength = 35; // Minimum buffer length to accomodate the longest magic number chunk
-    let fd = await fsAsync.open(filePath, 'r');
-    let content = await fsAsync.read(fd, Buffer.alloc(bufLength), 0, bufLength, 0);
-    await fsAsync.close(fd);
-    let buffer = content.buffer;
-
-    return guessByBuffer(buffer);
-    
-}
-
 
 let guess = async (filePath)=>{
     // Guess using mimetype command
@@ -321,20 +375,8 @@ module.exports = {
 };
 
 
-fs.stat('./test/files/zip.zip', (err, stats)=>{
-    console.log(err,stats);
-});
 
-async function what(){
-    let bufLength = 22; // Minimum buffer length to accomodate the longest magic number chunk
-    let fd = await fsAsync.open('./test/files/zip.zip', 'r');
-    let size
-    let content = await fsAsync.read(fd, Buffer.alloc(bufLength), 0, bufLength, 115-22);
-    await fsAsync.close(fd);
-    let buffer = content.buffer;
-    return buffer;
-}
 
-what().then((buffer)=>{
+getChunkFromEnd('./test/files/zip.zip', 22).then((buffer)=>{
     console.log(buffer.toString());
 }).catch((err)=>{})
