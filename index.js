@@ -9,7 +9,7 @@ const execAsync = util.promisify(require('child_process').exec);
 //// Modules
 
 
-let content = fs.readFileSync('./mime.json', 'utf-8');
+let content = fs.readFileSync( path.join(__dirname, 'mime.json'), 'utf-8');
 let mimeCollection = JSON.parse(content);
 
 // Turn callback style api into promise/async
