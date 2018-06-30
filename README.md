@@ -88,7 +88,11 @@ Promise:
         console.log(type);  // 'image/png' or 'unknown' on fail
     }).catch((err)=>{});
 
-    
+
+#### Get file extension from mime type
+
+    let ext = guessFileType.getExtensionFromMime('image/png'); // png
+
 ## References
 
 * https://www.iana.org/assignments/media-types/media-types.xhtml

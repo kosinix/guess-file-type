@@ -208,3 +208,12 @@ describe("Test Using guess()", ()=> {
     // });
 });
 
+describe("Test Mime to Extension", ()=> {
+    describe("getExtensionFromMime", ()=> {      
+
+        it("png", ()=> {
+            let ext = guessFileType.getExtensionFromMime('image/png');
+            expect(ext).to.equal('png');
+        });
+    })
+});

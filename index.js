@@ -405,11 +405,20 @@ let guess = async (filePath)=>{
     return guessByExtension(filePath);
 }
 
+let getExtensionFromMime = (mime='unknown') =>{
+    for (const key of Object.keys(mimeCollection)) {
+        if(mimeCollection[key]===mime){
+            return key;
+        }
+    }
+    return false;
+}
 module.exports = {
     guess: guess,
     guessByFileCmd: guessByFileCmd,
     guessByFileSignature: guessByFileSignature,
     guessByExtension: guessByExtension,
+    getExtensionFromMime: getExtensionFromMime,
 };
 
 
