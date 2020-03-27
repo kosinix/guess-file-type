@@ -93,6 +93,18 @@ Promise:
 
     let ext = guessFileType.getExtensionFromMime('image/png'); // png
 
+
+## Test
+
+Install mocha globally
+
+    npm install mocha -g
+
+Run test
+
+    npm test
+
+
 ## References
 
 * https://www.iana.org/assignments/media-types/media-types.xhtml
