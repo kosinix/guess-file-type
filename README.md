@@ -3,33 +3,32 @@ Detect the file type by doing various checks. Returns the mime type.
 
 
 
-## How it Works
+**How it Works**
 
 * First it tries to use the `mimetype` command. See Requirements > Optional.
 * If `mimetype` is not available, it uses the file signature (magic numbers).
 * If the type could not be determined, it falls back to using the file extension.
 * It returns the mime type of the file on success, and a string 'unknown' on failure.
 
-### Changing the Behavior
+**Changing the Behavior**
 
-You can avoid the default behavior by using the individual functions. See Usage.
-
-## Requirements
-
-* Node >= 8.0.0
-
-### Optional
-
-To improve mime detection, install the `mimetype` command:
-
-    sudo apt install libfile-mimeinfo-perl
-
-Its results are much more accurate than `file`.
+You can avoid the default behavior by using the individual functions. See [Usage](#usage).
 
 ## Installation
 
+In a node.js app:
+
     npm install guess-file-type
 
+**Optional**
+
+In Ubuntu, install the `mimetype` command:
+
+    sudo apt install libfile-mimeinfo-perl
+
+The module will use it if the command is available.
+
+Its results are much more accurate than the `file` command in Linux.
 
 ## Usage
 
@@ -93,6 +92,12 @@ Promise:
 
     let ext = guessFileType.getExtensionFromMime('image/png'); // png
 
+
+## Development
+
+    git clone https://github.com/kosinix/guess-file-type.git
+    cd [/path/to/]guess-file-type
+    npm install
 
 ## Test
 
