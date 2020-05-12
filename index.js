@@ -73,7 +73,7 @@ let guessByFileCmd = async (filePath, filters=null) => {
         // Allow filters override
         if(filters===null){
             // Normalize mime-types
-            let filters = [[
+            filters = [[
                 'image/x-ms-bmp', // standardize
                 'image/bmp'
             ],
