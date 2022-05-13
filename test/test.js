@@ -41,7 +41,6 @@ describe("Test Using guess()", ()=> {
             expect(type).to.equal('image/tiff');
         });
 
-        
 
         // TODO: Need valid .pgm file to test
         // it("pgm", async ()=> {
@@ -52,8 +51,8 @@ describe("Test Using guess()", ()=> {
     });
 
     describe("Audio Types", ()=> {
-        
-        
+
+
 
         it("flv", async ()=> {
             let type = await guessFileType.guess('./test/files/flv.flv');
@@ -83,7 +82,7 @@ describe("Test Using guess()", ()=> {
     });
 
     describe("Video Types", ()=> {
-        
+
         it("avi", async ()=> {
             let type = await guessFileType.guess('./test/files/avi.avi');
             expect(type).to.equal('video/x-msvideo');
@@ -115,7 +114,7 @@ describe("Test Using guess()", ()=> {
         });
     });
 
-    describe("Document Types", ()=> {      
+    describe("Document Types", ()=> {
         it("123", async ()=> {
             let type = await guessFileType.guess('./test/files/123.123');
             expect(type).to.equal('application/vnd.lotus-1-2-3');
@@ -160,12 +159,12 @@ describe("Test Using guess()", ()=> {
             let type = await guessFileType.guess('./test/files/pptx.pptx');
             expect(type).to.equal('application/vnd.openxmlformats-officedocument.presentationml.presentation');
         });
-        
+
         it("psd", async ()=> {
             let type = await guessFileType.guess('./test/files/psd.psd');
             expect(type).to.equal('image/vnd.adobe.photoshop');
         });
-        
+
         it("txt", async ()=> {
             let type = await guessFileType.guess('./test/files/txt.txt');
             expect(type).to.equal('text/plain');
@@ -173,7 +172,7 @@ describe("Test Using guess()", ()=> {
 
     });
 
-    describe("Font Types", ()=> {      
+    describe("Font Types", ()=> {
 
         it("eot", async ()=> {
             let type = await guessFileType.guess('./test/files/eot.eot');
@@ -202,6 +201,19 @@ describe("Test Using guess()", ()=> {
 
     });
 
+    describe("Shell Types", ()=> {
+
+        it("sh", async ()=> {
+            let type = await guessFileType.guess('./test/files/script-sh');
+            expect(type).to.equal('text/x-shellscript');
+        });
+
+        it("bash", async ()=> {
+            let type = await guessFileType.guess('./test/files/script-bash');
+            expect(type).to.equal('text/x-shellscript');
+        });
+    });
+
     // afterEach((done) => {
     //     console.log(done);
     //     done();
@@ -209,7 +221,7 @@ describe("Test Using guess()", ()=> {
 });
 
 describe("Test Mime to Extension", ()=> {
-    describe("getExtensionFromMime", ()=> {      
+    describe("getExtensionFromMime", ()=> {
 
         it("png", ()=> {
             let ext = guessFileType.getExtensionFromMime('image/png');
