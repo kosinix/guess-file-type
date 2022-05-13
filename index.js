@@ -9,8 +9,8 @@ const execAsync = util.promisify(require('child_process').exec);
 //// Modules
 
 
-let content = fs.readFileSync( path.join(__dirname, 'mime.json'), 'utf-8');
-let mimeCollection = JSON.parse(content);
+const content = fs.readFileSync( path.join(__dirname, 'mime.json'), 'utf-8');
+const mimeCollection = JSON.parse(content);
 
 // Turn callback style api into promise/async
 const fsAsync = {
@@ -29,12 +29,12 @@ const fsAsync = {
  * @param {number} length - The byte length of the buffer.
  * @returns {Buffer} The chunk
  */
-let getChunk = async (filePath, length)=>{
-    let fd = await fsAsync.open(filePath, 'r');
+const getChunk = async (filePath, length)=>{
+    const fd = await fsAsync.open(filePath, 'r');
     // Get from start
-    let content = await fsAsync.read(fd, Buffer.alloc(length), 0, length, 0);
+    const content = await fsAsync.read(fd, Buffer.alloc(length), 0, length, 0);
     await fsAsync.close(fd);
-    let buffer = content.buffer;
+    const buffer = content.buffer;
     return buffer;
 }
 
@@ -45,14 +45,14 @@ let getChunk = async (filePath, length)=>{
  * @param {number} length - The byte length of the buffer.
  * @returns {Buffer} The chunk
  */
-let getChunkFromEnd = async (filePath, length)=>{
-    let fd = await fsAsync.open(filePath, 'r');
+const getChunkFromEnd = async (filePath, length)=>{
+    const fd = await fsAsync.open(filePath, 'r');
     // We need the size
-    let stat = await fsAsync.fstat(fd);
+    const stat = await fsAsync.fstat(fd);
     // Get from end of file (not from start)
-    let content = await fsAsync.read(fd, Buffer.alloc(length), 0, length, stat.size-length);
+    const content = await fsAsync.read(fd, Buffer.alloc(length), 0, length, stat.size-length);
     await fsAsync.close(fd);
-    let buffer = content.buffer;
+    const buffer = content.buffer;
     return buffer;
 }
 
@@ -63,12 +63,12 @@ let getChunkFromEnd = async (filePath, length)=>{
  * @param {(null|Array)} filters 
  * @returns {string} The mime type on success or 'unknown' on fail.
  */
-let guessByFileCmd = async (filePath, filters=null) => {
+const guessByFileCmd = async (filePath, filters=null) => {
     try {
-        let command = util.format('mimetype --brief %s', filePath);
-        let { stdout, stderr } = await execAsync(command);
+        const command = util.format('mimetype --brief %s', filePath);
+        const { stdout, stderr } = await execAsync(command);
 
-        let mime = stdout.trim();
+        const mime = stdout.trim();
 
         // Allow filters override
         if(filters===null){
@@ -113,13 +113,12 @@ let guessByFileCmd = async (filePath, filters=null) => {
  * @param {string} filePath - Path to the file.
  * @returns {string} The mime type on success or 'unknown' on fail.
  */
-let guessByFileSignature = async (filePath) => {
+const guessByFileSignature = async (filePath) => {
 
-    let length = 35; // Minimum buffer length to accomodate the longest magic number chunk
-    let buffer = await getChunk(filePath, length);
+    const length = 35; // Minimum buffer length to accomodate the longest magic number chunk
+    const buffer = await getChunk(filePath, length);
 
     // TODO: Rearrange buffer checks with the longest buffers on top
-
 
     // Windows (or device-independent) bitmap image
     // bmp|dib
@@ -361,6 +360,14 @@ let guessByFileSignature = async (filePath) => {
         return 'font/ttf';
     }
 
+    // Shell
+    // #!/bin/sh
+    // #!/bin/bash
+    if(buffer.includes(Buffer.from([0x23, 0x21, 0x2f, 0x62, 0x69, 0x6e, 0x2f]), 0) &&
+        (buffer.includes(Buffer.from([0x73, 0x68]), 7) || buffer.includes(Buffer.from([0x62, 0x61, 0x73, 0x68]), 7)) ){
+        return 'text/x-shellscript';
+    }
+
     // TRAILER BYTES - markers that are at the end 
 
 
@@ -372,7 +379,7 @@ let guessByFileSignature = async (filePath) => {
  * @param {string} filePath - Path to the file.
  * @returns {string} The mime type on success or 'unknown' on fail.
  */
-let guessByExtension = (filePath) => {
+const guessByExtension = (filePath) => {
     // Fallback to file extensions
     let ext = path.extname(filePath);
     ext = ext.split('.').pop().toLowerCase();
@@ -390,7 +397,7 @@ let guessByExtension = (filePath) => {
  * @param {string} filePath - Path to the file.
  * @returns {string} The mime type on success or 'unknown' on fail.
  */
-let guess = async (filePath)=>{
+const guess = async (filePath)=>{
     // Guess using mimetype command
     let guess = await guessByFileCmd(filePath);
     if(guess!=='unknown'){
@@ -405,7 +412,7 @@ let guess = async (filePath)=>{
     return guessByExtension(filePath);
 }
 
-let getExtensionFromMime = (mime='unknown') =>{
+const getExtensionFromMime = (mime='unknown') =>{
     for (const key of Object.keys(mimeCollection)) {
         if(mimeCollection[key]===mime){
             return key;
